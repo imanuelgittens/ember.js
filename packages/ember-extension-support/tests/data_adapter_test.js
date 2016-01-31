@@ -22,6 +22,8 @@ var DataAdapter = EmberDataAdapter.extend({
 
 QUnit.module('Data Adapter', {
   setup() {
+    console.log(`[TEST] Setup: ${QUnit.config.current.testName}`);
+
     run(function() {
       App = EmberApplication.create();
       App.toString = function() { return 'App'; };
@@ -30,6 +32,8 @@ QUnit.module('Data Adapter', {
     });
   },
   teardown() {
+    console.log(`[TEST] Teardown: ${QUnit.config.current.testName}`);
+
     run(function() {
       adapter.destroy();
       App.destroy();
@@ -38,30 +42,66 @@ QUnit.module('Data Adapter', {
 });
 
 QUnit.test('Model types added with DefaultResolver', function() {
+  console.log(`[TEST] Run: 45`);
+
   App.Post = Model.extend();
 
+  console.log(`[TEST] Run: 49`);
+
   adapter = App.__container__.lookup('data-adapter:main');
+
+  console.log(`[TEST] Run: 53`);
+
   adapter.reopen({
     getRecords() {
+      console.log(`[TEST] Run: 57`);
       return emberA([1, 2, 3]);
     },
     columnsForType() {
+      console.log(`[TEST] Run: 61`);
       return [{ name: 'title', desc: 'Title' }];
     }
   });
 
+  console.log(`[TEST] Run: 66`);
+
   run(App, 'advanceReadiness');
 
+  console.log(`[TEST] Run: 70`);
+
   var modelTypesAdded = function(types) {
+    console.log(`[TEST] Run: 73`);
+
     equal(types.length, 1);
+
+    console.log(`[TEST] Run: 77`);
+
     var postType = types[0];
+
+    console.log(`[TEST] Run: 81`);
+
     equal(postType.name, 'post', 'Correctly sets the name');
+
+    console.log(`[TEST] Run: 85`);
+
     equal(postType.count, 3, 'Correctly sets the record count');
+
+    console.log(`[TEST] Run: 89`);
+
     strictEqual(postType.object, App.Post, 'Correctly sets the object');
+
+    console.log(`[TEST] Run: 93`);
+
     deepEqual(postType.columns, [{ name: 'title', desc: 'Title' }], 'Correctly sets the columns');
+
+    console.log(`[TEST] Run: 97`);
   };
 
+  console.log(`[TEST] Run: 100`);
+
   adapter.watchModelTypes(modelTypesAdded);
+
+  console.log(`[TEST] Run: 104`);
 });
 
 QUnit.test('getRecords gets a model name as second argument', function() {

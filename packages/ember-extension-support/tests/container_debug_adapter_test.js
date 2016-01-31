@@ -12,6 +12,8 @@ function boot() {
 
 QUnit.module('Container Debug Adapter', {
   setup() {
+    console.log(`[TEST] Setup: ${QUnit.config.current.testName}`);
+
     run(function() {
       App = Application.create();  // ES6TODO: this comes from the ember-application package NOT ember-runtime
       App.toString = function() { return 'App'; };
@@ -24,6 +26,8 @@ QUnit.module('Container Debug Adapter', {
     });
   },
   teardown() {
+    console.log(`[TEST] Teardown: ${QUnit.config.current.testName}`);
+
     run(function() {
       adapter.destroy();
       appInstance.destroy();

@@ -541,12 +541,25 @@ const Application = Engine.extend({
     @public
   */
   advanceReadiness() {
+    console.log(`[TEST] Run: 544`);
+
     assert('You must call advanceReadiness on an instance of Ember.Application', this instanceof Application);
+
+    // console.log(`[TEST] Run: 548`);
+
     this._readinessDeferrals--;
 
+    // console.log(`[TEST] Run: 552`);
+
     if (this._readinessDeferrals === 0) {
+      // console.log(`[TEST] Run: 555`);
+
       run.once(this, this.didBecomeReady);
+
+      // console.log(`[TEST] Run: 559`);
     }
+
+    // console.log(`[TEST] Run: 562`);
   },
 
   /**
@@ -592,27 +605,57 @@ const Application = Engine.extend({
     @private
   */
   _bootSync() {
+    // console.log(`[TEST] Run: 608`);
+
     if (this._booted) { return; }
+
+    // console.log(`[TEST] Run: 612`);
 
     // Even though this returns synchronously, we still need to make sure the
     // boot promise exists for book-keeping purposes: if anything went wrong in
     // the boot process, we need to store the error as a rejection on the boot
     // promise so that a future caller of `boot()` can tell what failed.
     let defer = this._bootResolver = new RSVP.defer();
+
+    // console.log(`[TEST] Run: 620`);
+
     this._bootPromise = defer.promise;
 
+    // console.log(`[TEST] Run: 624`);
+
     try {
+      // console.log(`[TEST] Run: 627`);
+
       this.runInitializers();
+
+      // console.log(`[TEST] Run: 631`);
+
       runLoadHooks('application', this);
+
+      // console.log(`[TEST] Run: 635`);
+
       this.advanceReadiness();
+
+      // console.log(`[TEST] Run: 639`);
+
       // Continues to `didBecomeReady`
     } catch(error) {
+      // console.log(`[TEST] Run: 643`);
+
+      // console.error(error.stack);
+
+      // console.log(`[TEST] Run: 647`);
+
       // For the asynchronous boot path
       defer.reject(error);
+
+      // console.log(`[TEST] Run: 652`);
 
       // For the synchronous boot path
       throw error;
     }
+
+    // console.log(`[TEST] Run: 658`);
   },
 
   /**
@@ -711,58 +754,121 @@ const Application = Engine.extend({
     @method didBecomeReady
   */
   didBecomeReady() {
+    // console.log(`[TEST] Run: 727`);
+
     try {
+      // console.log(`[TEST] Run: 730`);
+
       // TODO: Is this still needed for _globalsMode = false?
       if (!Ember.testing) {
+        // console.log(`[TEST] Run: 734`);
+
         // Eagerly name all classes that are already loaded
         Ember.Namespace.processAll();
+
+        // console.log(`[TEST] Run: 739`);
+
         Ember.BOOTED = true;
+
+        // console.log(`[TEST] Run: 743`);
       }
 
+      // console.log(`[TEST] Run: 746`);
+
       if (isEnabled('ember-application-visit')) {
+        // console.log(`[TEST] Run: 749`);
+
         // See documentation on `_autoboot()` for details
         if (this.autoboot) {
+          // console.log(`[TEST] Run: 753`);
+
           let instance;
 
+          // console.log(`[TEST] Run: 757`);
+
           if (this._globalsMode) {
+            // console.log(`[TEST] Run: 760`);
+
             // If we already have the __deprecatedInstance__ lying around, boot it to
             // avoid unnecessary work
             instance = this.__deprecatedInstance__;
+
+            // console.log(`[TEST] Run: 766`);
           } else {
+            // console.log(`[TEST] Run: 768`);
+
             // Otherwise, build an instance and boot it. This is currently unreachable,
             // because we forced _globalsMode to === autoboot; but having this branch
             // allows us to locally toggle that flag for weeding out legacy globals mode
             // dependencies independently
             instance = this.buildInstance();
+
+            // console.log(`[TEST] Run: 776`);
           }
 
+          // console.log(`[TEST] Run: 779`);
+
           instance._bootSync();
+
+          // console.log(`[TEST] Run: 783`);
 
           // TODO: App.ready() is not called when autoboot is disabled, is this correct?
           this.ready();
 
+          // console.log(`[TEST] Run: 788`);
+
           instance.startRouting();
+
+          // console.log(`[TEST] Run: 792`);
         }
       } else {
+        // console.log(`[TEST] Run: 795`);
+
         let instance = this.__deprecatedInstance__;
 
+        // console.log(`[TEST] Run: 799`);
+
         instance._bootSync();
+
+        // console.log(`[TEST] Run: 803`);
+
         this.ready();
+
+        // console.log(`[TEST] Run: 807`);
+
         instance.startRouting();
+
+        // console.log(`[TEST] Run: 811`);
       }
+
+      // console.log(`[TEST] Run: 814`);
 
       // For the asynchronous boot path
       this._bootResolver.resolve(this);
 
+      // console.log(`[TEST] Run: 819`);
+
       // For the synchronous boot path
       this._booted = true;
+
+      // console.log(`[TEST] Run: 824`);
     } catch(error) {
+      // console.log(`[TEST] Run: 826`);
+
+      // console.error(error.stack);
+
+      // console.log(`[TEST] Run: 830`);
+
       // For the asynchronous boot path
       this._bootResolver.reject(error);
+
+      // console.log(`[TEST] Run: 835`);
 
       // For the synchronous boot path
       throw error;
     }
+
+    // console.log(`[TEST] Run: 841`);
   },
 
   /**
